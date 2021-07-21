@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * ALSWiki Editor
  */
@@ -17,8 +19,21 @@ const forkAndGotoFork = () => {
   }, 50);
 }
 
+const insertContributeButton = () => {
+  const li = document.createElement('li');
+  li.innerHTML = `
+  <div>
+    <button class='btn btn-sm'>
+      Contribute to Wiki
+    </button>
+  </div>
+  `;
+  li.querySelector('button').addEventListener('click', forkAndGotoFork);
+  document.querySelector('.pagehead-actions').appendChild(li);
+};
+
 window.addEventListener('load', () => {
   if (isOnMainWiki())
-    return forkAndGotoFork();
+    return insertContributeButton();
 });
 
