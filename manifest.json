@@ -1,0 +1,26 @@
+{
+  "name": "ALSWiki Editor",
+  "description": "A helper to contribute to the ALSWiki with forking and rich editor assistance.",
+  "version": VERSION,
+  "manifest_version": 2,
+  "permissions": [
+    "webRequest",
+    "webRequestBlocking",
+    "https://github.com/*",
+    "storage"
+  ],
+  "content_scripts": [
+    {
+      "matches": [
+        "https://github.com/*"
+      ],
+      "js": [
+        "./js/main.js"
+      ]
+    }
+  ],
+  "web_accessible_resources": [
+    "src/*"
+  ],
+  "content_security_policy": "script-src 'self' 'unsafe-eval' https://cdn.jsdelivr.net; object-src 'self'"
+}
