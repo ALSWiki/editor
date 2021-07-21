@@ -4,8 +4,8 @@
  * ALSWiki Editor
  */
 
-#include "./utils.js"
 #include "./editor.js"
+#include "./utils.js"
 
 const isOnMainWiki = URL === 'https://github.com/ALSWiki/wiki';
 const isForkedTag = e => e.textContent.includes(`You've already forked wiki`);

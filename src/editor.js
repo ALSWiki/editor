@@ -1,12 +1,17 @@
 #ifndef EDITOR_G
 #define EDITOR_G
 
+#include "./selection.js"
 #include "./utils.js"
 
 const newFile = URL.includes('/wiki/new/') || URL.includes('/wiki/create/');
 const editingFile = URL.includes('/wiki/edit/');
 const isOnEditor = newFile || editingFile;
 const editor = document.querySelector('.commit-create');
+
+const getLine = cursor => {
+  return cursor.parentElement.querySelector('span[role=presentation]');
+};
 
 const createArticleNamingHelper = () => {
   const helpInfo = document.createElement('span');
@@ -17,10 +22,17 @@ const createArticleNamingHelper = () => {
 };
 
 const createBoldButton = () => {
-  const button = document.createElement('button');
+  const button = document.createElement('div');
   button.className = 'btn btn-sm';
   button.textContent = 'B';
+  button.onclick = boldText;
   return button;
+};
+
+const boldText = () => {
+  const cursor = editor.querySelector('.CodeMirror-cursors');
+  const line = getLine(cursor);
+  const offset = getCaretCharOffset(line);
 };
 
 const styleMarkdownToolbar = toolbar => {
