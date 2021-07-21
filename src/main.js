@@ -4,10 +4,13 @@
  * ALSWiki Editor
  */
 
-const isOnURL = url => () => window.location.href === url;
-const isOnMainWiki = isOnURL('https://github.com/ALSWiki/wiki');
+#include "./utils.js"
+
+const URL = window.location.href;
+const isOnMainWiki = URL === 'https://github.com/ALSWiki/wiki';
 const isForkedTag = e => e.textContent.includes(`You've already forked wiki`);
 const hasAlreadyForked = () => [...document.querySelectorAll('h3')].some(isForkedTag);
+const isOnFork = !isOnMainWiki && URL.includes('/wiki');
 
 const forkAndGotoFork = () => {
   document.querySelector('.pagehead-actions li:nth-child(3) summary').click()
@@ -32,8 +35,33 @@ const insertContributeButton = () => {
   document.querySelector('.pagehead-actions').appendChild(li);
 };
 
+const changeButtonText = (button, oldText, newText) => {
+  if (button.textContent.includes(oldText)) {
+    button.textContent = newText;
+  }
+};
+
+const changeModifyFileButton = () => {
+  changeButtonText(
+    document.querySelector('.file-navigation a.btn'),
+    'Go to file',
+    'Go to article'
+  );
+};
+
+const changeAddFileButton = () => {
+  changeButtonText(
+    document.querySelector('.file-navigation summary[role=button] span'),
+    'Add file',
+    'Add article'
+  )
+};
+
 window.addEventListener('load', () => {
-  if (isOnMainWiki())
-    return insertContributeButton();
+  if (isOnMainWiki) return insertContributeButton();
+  if (isOnFork) return repeatUntilSuccess(() => {
+    changeModifyFileButton();
+    changeAddFileButton();
+  });
 });
 
