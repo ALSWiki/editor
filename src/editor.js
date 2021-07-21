@@ -8,6 +8,7 @@ const newFile = URL.includes('/wiki/new/') || URL.includes('/wiki/create/');
 const editingFile = URL.includes('/wiki/edit/');
 const isOnEditor = newFile || editingFile;
 const editor = document.querySelector('.commit-create');
+const code = () => editor.querySelector('.CodeMirror-code');
 
 const getLine = cursor => {
   return cursor.parentElement.querySelector('span[role=presentation]');
@@ -29,10 +30,45 @@ const createBoldButton = () => {
   return button;
 };
 
+const insertText = text => {
+  const transfer = new DataTransfer();
+  transfer.setData('text/plain', text);
+  code().dispatchEvent(new ClipboardEvent('paste', {
+    clipboardData: transfer
+  }));
+};
+
+const flattenNodes = lines => {
+  const nodes = [];
+  lines.forEach(e => {
+    if (e.childNodes.length) {
+      nodes.push(...flattenNodes(e.childNodes));
+    }
+    else {
+      nodes.push(e);
+    }
+  });
+  return nodes;
+};
+
 const boldText = () => {
-  const cursor = editor.querySelector('.CodeMirror-cursors');
-  const line = getLine(cursor);
-  const offset = getCaretCharOffset(line);
+  const cursor = () => editor.querySelector('.CodeMirror-cursors');
+  const line = () => getLine(cursor());
+  let offset = getCaretCharOffset(line()) + 2;
+  insertText('** **');
+
+  for (const node of flattenNodes(line().childNodes)) {
+    if (node.length <= offset) {
+      offset -= node.length;
+      continue;
+    }
+    const range = document.createRange()
+    range.setStart(node, offset)
+    range.setEnd(node, offset + 1)
+    window.getSelection().removeAllRanges()
+    window.getSelection().addRange(range)
+    return;
+  }
 };
 
 const styleMarkdownToolbar = toolbar => {
