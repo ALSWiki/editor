@@ -5,12 +5,12 @@
  */
 
 #include "./utils.js"
+#include "./editor.js"
 
-const URL = window.location.href;
 const isOnMainWiki = URL === 'https://github.com/ALSWiki/wiki';
 const isForkedTag = e => e.textContent.includes(`You've already forked wiki`);
 const hasAlreadyForked = () => [...document.querySelectorAll('h3')].some(isForkedTag);
-const isOnFork = !isOnMainWiki && URL.includes('/wiki');
+const isOnFork = !isOnMainWiki && !isOnEditor && URL.includes('/wiki');
 
 const forkAndGotoFork = () => {
   document.querySelector('.pagehead-actions li:nth-child(3) summary').click()
@@ -26,7 +26,7 @@ const insertContributeButton = () => {
   const li = document.createElement('li');
   li.innerHTML = `
   <div>
-    <button class='btn btn-sm'>
+    <button class="btn btn-sm">
       Contribute to Wiki
     </button>
   </div>
@@ -63,5 +63,6 @@ window.addEventListener('load', () => {
     changeModifyFileButton();
     changeAddFileButton();
   });
+  if (isOnEditor) return runEditor();
 });
 
