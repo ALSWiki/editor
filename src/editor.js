@@ -30,12 +30,27 @@ const createBetweenTransformButton = (label, eachSide) => () => {
   return button;
 };
 
+const createOneTransformButton = (label, text) => () => {
+  const button = document.createElement('div');
+  button.className = 'btn btn-sm';
+  button.textContent = label;
+  button.onclick = oneTextTransform(text);
+  return button;
+};
+
 const insertText = text => {
   const transfer = new DataTransfer();
   transfer.setData('text/plain', text);
   code().dispatchEvent(new ClipboardEvent('paste', {
     clipboardData: transfer
   }));
+};
+
+const getCursorInfo = () => {
+  const cursor = () => editor.querySelector('.CodeMirror-cursors');
+  const line = () => getLine(cursor());
+  const offset = getCaretCharOffset(line());
+  return { cursor, line, offset };
 };
 
 /**
@@ -47,16 +62,21 @@ const insertText = text => {
  * @return {() => void}
  */
 const betweenTransform = eachSide => () => {
-  const cursor = () => editor.querySelector('.CodeMirror-cursors');
-  const line = () => getLine(cursor());
-  const offset = getCaretCharOffset(line());
+  const { line, offset } = getCursorInfo();
   insertText(`${eachSide} ${eachSide}`);
   setCaret(line(), offset + eachSide.length, offset + eachSide.length + 1);
+};
+
+const oneTextTransform = text => () => {
+  const { line, offset } = getCursorInfo();
+  insertText(`${text} `);
+  setCaret(line(), offset + text.length, offset + text.length + 1);
 };
 
 const createBoldButton = createBetweenTransformButton('B', '__');
 const createItalicButton = createBetweenTransformButton('I', '_');
 const createStrikeThroughButton = createBetweenTransformButton('S', '~~');
+const createBulletButton = createOneTransformButton('•', '* ');
 
 const styleMarkdownToolbar = toolbar => {
   toolbar.style = `
@@ -74,6 +94,7 @@ const loadMarkdownHelperToolbar = () => {
     createBoldButton(),
     createItalicButton(),
     createStrikeThroughButton(),
+    createBulletButton(),
   ];
   buttons.forEach(button => toolbar.appendChild(button));
   styleMarkdownToolbar(toolbar);
