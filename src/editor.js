@@ -22,11 +22,11 @@ const createArticleNamingHelper = () => {
   document.querySelector('.js-branch-name-label-container').appendChild(helpInfo);
 };
 
-const createBoldButton = () => {
+const createBetweenTransformButton = (label, eachSide) => () => {
   const button = document.createElement('div');
   button.className = 'btn btn-sm';
-  button.textContent = 'B';
-  button.onclick = boldText;
+  button.textContent = label;
+  button.onclick = betweenTransform(eachSide);
   return button;
 };
 
@@ -38,45 +38,33 @@ const insertText = text => {
   }));
 };
 
-const flattenNodes = lines => {
-  const nodes = [];
-  lines.forEach(e => {
-    if (e.childNodes.length) {
-      nodes.push(...flattenNodes(e.childNodes));
-    }
-    else {
-      nodes.push(e);
-    }
-  });
-  return nodes;
-};
-
-const boldText = () => {
+/**
+ * The type of transform where there is markdown that encloses text.
+ *
+ * Eg. **text** will have an eachSide of '**'
+ *
+ * @param {String} eachSide
+ * @return {() => void}
+ */
+const betweenTransform = eachSide => () => {
   const cursor = () => editor.querySelector('.CodeMirror-cursors');
   const line = () => getLine(cursor());
-  let offset = getCaretCharOffset(line()) + 2;
-  insertText('** **');
-
-  for (const node of flattenNodes(line().childNodes)) {
-    if (node.length <= offset) {
-      offset -= node.length;
-      continue;
-    }
-    const range = document.createRange()
-    range.setStart(node, offset)
-    range.setEnd(node, offset + 1)
-    window.getSelection().removeAllRanges()
-    window.getSelection().addRange(range)
-    return;
-  }
+  const offset = getCaretCharOffset(line());
+  insertText(`${eachSide} ${eachSide}`);
+  setCaret(line(), offset + eachSide.length, offset + eachSide.length + 1);
 };
+
+const createBoldButton = createBetweenTransformButton('B', '__');
+const createItalicButton = createBetweenTransformButton('I', '_');
+const createStrikeThroughButton = createBetweenTransformButton('S', '~~');
 
 const styleMarkdownToolbar = toolbar => {
   toolbar.style = `
     display: flex;
     flex-direction: row wrap;
-    gap: 1rem;
+    gap: 0.5rem;
     padding-left: 2rem;
+    padding-top: 0.25rem;
   `;
 };
 
@@ -84,6 +72,8 @@ const loadMarkdownHelperToolbar = () => {
   const toolbar = document.createElement('div');
   const buttons = [
     createBoldButton(),
+    createItalicButton(),
+    createStrikeThroughButton(),
   ];
   buttons.forEach(button => toolbar.appendChild(button));
   styleMarkdownToolbar(toolbar);
