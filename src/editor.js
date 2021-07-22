@@ -22,21 +22,19 @@ const createArticleNamingHelper = () => {
   document.querySelector('.js-branch-name-label-container').appendChild(helpInfo);
 };
 
-const createBetweenTransformButton = (label, eachSide) => () => {
+const createTransformButton = (label, onClick) => () => {
   const button = document.createElement('div');
   button.className = 'btn btn-sm';
   button.textContent = label;
-  button.onclick = betweenTransform(eachSide);
+  button.onclick = onClick;
   return button;
 };
 
-const createOneTransformButton = (label, text) => () => {
-  const button = document.createElement('div');
-  button.className = 'btn btn-sm';
-  button.textContent = label;
-  button.onclick = oneTextTransform(text);
-  return button;
-};
+const createBetweenTransformButton = (label, eachSide) =>
+  createTransformButton(label, betweenTransform(eachSide));
+
+const createOneTransformButton = (label, text) =>
+  createTransformButton(label, oneTextTransform(text));
 
 const insertText = text => {
   const transfer = new DataTransfer();
@@ -56,7 +54,7 @@ const getCursorInfo = () => {
 /**
  * The type of transform where there is markdown that encloses text.
  *
- * Eg. **text** will have an eachSide of '**'
+ * Eg. `**words**` will have an eachSide of '**'
  *
  * @param {String} eachSide
  * @return {() => void}
@@ -67,6 +65,14 @@ const betweenTransform = eachSide => () => {
   setCaret(line(), offset + eachSide.length, offset + eachSide.length + 1);
 };
 
+/**
+ * The type of transform where there is a one-time text added to enable markdown tag.
+ *
+ * Eg. `* words` will have a text of '* '
+ *
+ * @param {String} text
+ * @return {() => void}
+ */
 const oneTextTransform = text => () => {
   const { line, offset } = getCursorInfo();
   insertText(`${text} `);
