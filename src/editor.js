@@ -82,7 +82,10 @@ const oneTextTransform = text => () => {
 const createBoldButton = createBetweenTransformButton('B', '__');
 const createItalicButton = createBetweenTransformButton('I', '_');
 const createStrikeThroughButton = createBetweenTransformButton('S', '~~');
+const createQuoteButton = createOneTransformButton('“', '> ');
 const createBulletButton = createOneTransformButton('•', '* ');
+const createOrderedListButton = createOneTransformButton('1.', '1. ');
+const createTaskListButton = createOneTransformButton('☑', '- [ ] ');
 
 const styleMarkdownToolbar = toolbar => {
   toolbar.style = `
@@ -100,7 +103,10 @@ const loadMarkdownHelperToolbar = () => {
     createBoldButton(),
     createItalicButton(),
     createStrikeThroughButton(),
+    createQuoteButton(),
     createBulletButton(),
+    createOrderedListButton(),
+    createTaskListButton(),
   ];
   buttons.forEach(button => toolbar.appendChild(button));
   styleMarkdownToolbar(toolbar);
