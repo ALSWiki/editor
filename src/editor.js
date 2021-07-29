@@ -10,10 +10,6 @@ const isOnEditor = newFile || editingFile;
 const editor = document.querySelector('.commit-create');
 const code = () => editor.querySelector('.CodeMirror-code');
 
-const getLine = cursor => {
-  return cursor.parentElement.querySelector('span[role=presentation]');
-};
-
 const createArticleNamingHelper = () => {
   const helpInfo = document.createElement('span');
   helpInfo.textContent =
@@ -45,8 +41,11 @@ const insertText = text => {
 };
 
 const getCursorInfo = () => {
-  const line = getCursorFocussedElement;
-  const offset = getCaretCharOffset(line());
+  const focussedParent = getCursorFocussedElement().parentElement;
+  const offset = getCaretCharOffset(focussedParent);
+  const getLines = () => code().querySelectorAll('span[role=presentation]');
+  const lineNum = [...getLines()].indexOf(focussedParent);
+  const line = () => getLines()[lineNum];
   return { line, offset };
 };
 
@@ -61,7 +60,7 @@ const getCursorInfo = () => {
 const betweenTransform = eachSide => () => {
   const { line, offset } = getCursorInfo();
   insertText(`${eachSide} ${eachSide}`);
-  setCaret(line(), offset + eachSide.length + 1, offset + eachSide.length + 2);
+  setCaret(line(), offset + eachSide.length, offset + eachSide.length + 1);
 };
 
 /**
@@ -75,7 +74,7 @@ const betweenTransform = eachSide => () => {
 const oneTextTransform = text => () => {
   const { line, offset } = getCursorInfo();
   insertText(`${text} `);
-  setCaret(line(), offset + text.length + 1, offset + text.length + 2);
+  setCaret(line(), offset + text.length, offset + text.length + 1);
 };
 
 const createBoldButton = createBetweenTransformButton('B', '__');
