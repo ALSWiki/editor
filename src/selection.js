@@ -30,8 +30,13 @@ const setCaret = (el, startPos, endPos) => {
   }
 };
 
+const getCursorFocussedElement = () => window
+  .getSelection()
+  .getRangeAt(0)
+  .endContainer;
+
 // https://stackoverflow.com/a/30400227
-function getCaretCharOffset(element) {
+const getCaretCharOffset = element => {
   if (window.getSelection) {
     const range = window.getSelection().getRangeAt(0);
     const preCaretRange = range.cloneRange();

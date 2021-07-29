@@ -45,10 +45,9 @@ const insertText = text => {
 };
 
 const getCursorInfo = () => {
-  const cursor = () => editor.querySelector('.CodeMirror-cursors');
-  const line = () => getLine(cursor());
+  const line = getCursorFocussedElement;
   const offset = getCaretCharOffset(line());
-  return { cursor, line, offset };
+  return { line, offset };
 };
 
 /**
@@ -62,7 +61,7 @@ const getCursorInfo = () => {
 const betweenTransform = eachSide => () => {
   const { line, offset } = getCursorInfo();
   insertText(`${eachSide} ${eachSide}`);
-  setCaret(line(), offset + eachSide.length, offset + eachSide.length + 1);
+  setCaret(line(), offset + eachSide.length + 1, offset + eachSide.length + 2);
 };
 
 /**
@@ -76,7 +75,7 @@ const betweenTransform = eachSide => () => {
 const oneTextTransform = text => () => {
   const { line, offset } = getCursorInfo();
   insertText(`${text} `);
-  setCaret(line(), offset + text.length, offset + text.length + 1);
+  setCaret(line(), offset + text.length + 1, offset + text.length + 2);
 };
 
 const createBoldButton = createBetweenTransformButton('B', '__');
