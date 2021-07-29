@@ -18,19 +18,20 @@ const createArticleNamingHelper = () => {
   document.querySelector('.js-branch-name-label-container').appendChild(helpInfo);
 };
 
-const createTransformButton = (label, onClick) => () => {
+const createTransformButton = (icon, label, onClick) => () => {
   const button = document.createElement('div');
   button.className = 'btn btn-sm';
-  button.textContent = label;
+  button.textContent = icon;
+  button.title = label;
   button.onclick = onClick;
   return button;
 };
 
-const createBetweenTransformButton = (label, eachSide) =>
-  createTransformButton(label, betweenTransform(eachSide));
+const createBetweenTransformButton = (icon, label, eachSide) =>
+  createTransformButton(icon, label, betweenTransform(eachSide));
 
-const createOneTransformButton = (label, text) =>
-  createTransformButton(label, oneTextTransform(text));
+const createOneTransformButton = (icon, label, text) =>
+  createTransformButton(icon, label, oneTextTransform(text));
 
 const insertText = text => {
   const transfer = new DataTransfer();
@@ -77,13 +78,13 @@ const oneTextTransform = text => () => {
   setCaret(line(), offset + text.length, offset + text.length + 1);
 };
 
-const createBoldButton = createBetweenTransformButton('B', '__');
-const createItalicButton = createBetweenTransformButton('I', '_');
-const createStrikeThroughButton = createBetweenTransformButton('S', '~~');
-const createQuoteButton = createOneTransformButton('“', '> ');
-const createBulletButton = createOneTransformButton('•', '* ');
-const createOrderedListButton = createOneTransformButton('1.', '1. ');
-const createTaskListButton = createOneTransformButton('☑', '- [ ] ');
+const createBoldButton = createBetweenTransformButton('B', 'Bold', '__');
+const createItalicButton = createBetweenTransformButton('I', 'Italic', '_');
+const createStrikeThroughButton = createBetweenTransformButton('S', 'Strikethrough', '~~');
+const createQuoteButton = createOneTransformButton('“', 'Blockquote', '> ');
+const createBulletButton = createOneTransformButton('•', 'Bulletpoint list', '* ');
+const createOrderedListButton = createOneTransformButton('1.', 'Numbered list', '1. ');
+const createTaskListButton = createOneTransformButton('☑', 'Task list', '- [ ] ');
 
 const styleMarkdownToolbar = toolbar => {
   toolbar.style = `
