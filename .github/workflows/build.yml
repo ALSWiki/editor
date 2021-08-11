@@ -1,0 +1,21 @@
+name: Latest Release Build
+on:
+  release:
+    types:
+      - released
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Build extensions
+        run: |
+          make
+      - name: Upload build to release
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: dist/ALSWikiEditor.zip
+          asset_name: ALSWikiEditor.zip
+          tag: ${{ github.ref }}
+          overwrite: true
