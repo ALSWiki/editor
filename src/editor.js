@@ -112,8 +112,7 @@ const loadMarkdownHelperToolbar = () => {
   editor.prepend(toolbar);
 };
 
-const enableSpellcheck = () =>
-  document.querySelector('textarea').spellcheck = true;
+const enableSpellcheck = () => code().spellcheck = true;
 
 const runEditor = () => {
   if (newFile) {
